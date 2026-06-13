@@ -1,0 +1,33 @@
+{
+  "name": "dotname",
+  "version": "0.1.0",
+  "description": "Spec-first onchain identity. Deploy on Base. Resolve via ENS. Built on dotdog.",
+  "type": "module",
+  "main": "src/cli.js",
+  "bin": {
+    "dotname": "./bin/dotname"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "templates/",
+    "README.md"
+  ],
+  "keywords": [
+    "ethereum",
+    "ens",
+    "base",
+    "solidity",
+    "spec-driven-development",
+    "dotdog",
+    "identity"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/specdog/dotdefi"
+  },
+  "dependencies": {
+    "dotdog": "latest"
+  }
+}
