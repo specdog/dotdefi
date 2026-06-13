@@ -1,0 +1,30 @@
+# SPEC — Yield Vault
+
+> A permissionless yield-bearing vault. Users deposit tokens, earn yield via automated strategies, withdraw with accrued rewards. ERC-4626 compatible.
+
+---
+
+## Product
+
+A vault that accepts deposits of an underlying token (USDC), mints shares representing ownership, deploys capital into yield strategies, and allows withdrawals at any time with accrued yield.
+
+### Flow: User deposits
+
+```
+User approves Vault → deposit(amount) → Vault mints Shares → Strategy deploys capital → yield accrues
+```
+
+### Flow: User withdraws
+
+```
+User calls withdraw(shares) → Vault burns Shares → Strategy withdraws capital → User receives underlying + yield
+```
+
+## Architecture
+
+| Contract | Role |
+|----------|------|
+| Vault | ERC-4626 compliant vault. Mints/burns shares. |
+| Strategy | Deploys capital into yield source (lending, LP). |
+| Share | ERC-20 token representing vault ownership. |
+| Registry | Tracks all vaults and strategies. |

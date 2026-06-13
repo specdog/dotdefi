@@ -1,0 +1,174 @@
+# Data Model — Yield Vault
+
+## Entities
+
+### Entity: Vault
+
+An ERC-4626 compliant vault that accepts deposits and manages yield strategies.
+
+```yaml
+entity: Vault
+type: contract
+properties:
+  address:
+    type: string
+    required: true
+  underlying:
+    type: string
+    required: true
+  name:
+    type: string
+    required: true
+  symbol:
+    type: string
+    required: true
+  totalAssets:
+    type: number
+    required: true
+  performanceFee:
+    type: number
+    required: true
+states: [initialized, active, paused, emergency]
+lifecycle: initialized → active → paused → emergency
+```
+
+### Entity: Strategy
+
+A yield-generating strategy that deploys vault capital.
+
+```yaml
+entity: Strategy
+type: contract
+properties:
+  address:
+    type: string
+    required: true
+  name:
+    type: string
+    required: true
+  apy:
+    type: number
+    required: true
+  tvl:
+    type: number
+    required: true
+  risk:
+    type: enum
+    values: [low, medium, high]
+    required: true
+states: [proposed, active, harvesting, closed]
+lifecycle: proposed → active → harvesting → closed
+```
+
+### Entity: Deposit
+
+A user deposit into the vault.
+
+```yaml
+entity: Deposit
+type: event
+properties:
+  user:
+    type: string
+    format: address
+    required: true
+  amount:
+    type: number
+    required: true
+  shares:
+    type: number
+    required: true
+  timestamp:
+    type: number
+    required: true
+states: [pending, confirmed]
+lifecycle: pending → confirmed
+```
+
+### Entity: Withdrawal
+
+A user withdrawal from the vault.
+
+```yaml
+entity: Withdrawal
+type: event
+properties:
+  user:
+    type: string
+    format: address
+    required: true
+  shares:
+    type: number
+    required: true
+  amount:
+    type: number
+    required: true
+  timestamp:
+    type: number
+    required: true
+states: [pending, queued, completed]
+lifecycle: pending → queued → completed
+```
+
+### Entity: Share
+
+ERC-20 token representing proportional ownership of vault assets.
+
+```yaml
+entity: Share
+type: contract
+properties:
+  address:
+    type: string
+    required: true
+  totalSupply:
+    type: number
+    required: true
+  pricePerShare:
+    type: number
+    required: true
+states: [active]
+lifecycle: active → active
+```
+
+## Relationships
+
+### Relationship: Vault → Strategy
+
+```yaml
+relationship: Vault -> Strategy
+verb: deploys
+cardinality: 1:N
+required: true
+description: Vault deploys capital into one or more strategies
+```
+
+### Relationship: Vault → Share
+
+```yaml
+relationship: Vault -> Share
+verb: mints
+cardinality: 1:1
+required: true
+description: Vault mints shares on deposit
+```
+
+### Relationship: Vault → Deposit
+
+```yaml
+relationship: Vault -> Deposit
+verb: receives
+cardinality: 1:N
+required: true
+description: Vault receives user deposits
+```
+
+### Relationship: Strategy → Vault
+
+```yaml
+relationship: Strategy -> Vault
+verb: returns
+cardinality: N:1
+required: true
+description: Strategy returns yield to vault
+```

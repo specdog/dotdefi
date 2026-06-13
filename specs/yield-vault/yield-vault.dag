@@ -1,0 +1,156 @@
+{
+  "v": "1.4",
+  "p": "yield-vault",
+  "c": "dotdog@0.3.5",
+  "n": [
+    {
+      "i": "Vault",
+      "t": "contract",
+      "g": "entity",
+      "d": "An ERC-4626 compliant vault that accepts deposits and manages yield strategies.",
+      "p": {
+        "address": "s!",
+        "underlying": "s!",
+        "name": "s!",
+        "symbol": "s!",
+        "totalAssets": "n!",
+        "performanceFee": "n!"
+      },
+      "s": [
+        "initialized",
+        "active",
+        "paused",
+        "emergency"
+      ],
+      "l": [
+        "initialized → active",
+        "active → paused",
+        "paused → emergency"
+      ]
+    },
+    {
+      "i": "Strategy",
+      "t": "contract",
+      "g": "entity",
+      "d": "A yield-generating strategy that deploys vault capital.",
+      "p": {
+        "address": "s!",
+        "name": "s!",
+        "apy": "n!",
+        "tvl": "n!",
+        "risk": "e!"
+      },
+      "s": [
+        "proposed",
+        "active",
+        "harvesting",
+        "closed"
+      ],
+      "l": [
+        "proposed → active",
+        "active → harvesting",
+        "harvesting → closed"
+      ]
+    },
+    {
+      "i": "Deposit",
+      "t": "event",
+      "g": "entity",
+      "d": "A user deposit into the vault.",
+      "p": {
+        "user": "s!",
+        "amount": "n!",
+        "shares": "n!",
+        "timestamp": "n!"
+      },
+      "s": [
+        "pending",
+        "confirmed"
+      ],
+      "l": [
+        "pending → confirmed"
+      ]
+    },
+    {
+      "i": "Withdrawal",
+      "t": "event",
+      "g": "entity",
+      "d": "A user withdrawal from the vault.",
+      "p": {
+        "user": "s!",
+        "shares": "n!",
+        "amount": "n!",
+        "timestamp": "n!"
+      },
+      "s": [
+        "pending",
+        "queued",
+        "completed"
+      ],
+      "l": [
+        "pending → queued",
+        "queued → completed"
+      ]
+    },
+    {
+      "i": "Share",
+      "t": "contract",
+      "g": "entity",
+      "d": "ERC-20 token representing proportional ownership of vault assets.",
+      "p": {
+        "address": "s!",
+        "totalSupply": "n!",
+        "pricePerShare": "n!"
+      },
+      "s": [
+        "active"
+      ],
+      "l": [
+        "active → active"
+      ]
+    }
+  ],
+  "e": [
+    {
+      "s": "Vault",
+      "t": "Strategy",
+      "v": "deploys",
+      "d": "Vault deploys capital into one or more strategies",
+      "c": "1:N",
+      "r": true
+    },
+    {
+      "s": "Vault",
+      "t": "Share",
+      "v": "mints",
+      "d": "Vault mints shares on deposit",
+      "c": "1:1",
+      "r": true
+    },
+    {
+      "s": "Vault",
+      "t": "Deposit",
+      "v": "receives",
+      "d": "Vault receives user deposits",
+      "c": "1:N",
+      "r": true
+    },
+    {
+      "s": "Strategy",
+      "t": "Vault",
+      "v": "returns",
+      "d": "Strategy returns yield to vault",
+      "c": "N:1",
+      "r": true
+    }
+  ],
+  "tk": {
+    "m": "chars/4",
+    "st": 971,
+    "ct": 971,
+    "dt": 443,
+    "sv": 54.4,
+    "cs": 54.4,
+    "saved": 528
+  }
+}
