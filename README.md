@@ -1,57 +1,76 @@
 # dotname
 
-> Spec-first onchain identity. Deploy on Base. Resolve via ENS.
+> Write a spec. Generate contracts. Deploy on Base. Register via ENS.
 
 Built on [dotdog](https://github.com/specdog/dotdog). Built for [ETHGlobal New York 2026](https://ethglobal.com/events/newyork2026).
 
-## What
+## The Pitch
 
-Write a .dog spec for your onchain identity protocol. dotname generates Solidity contracts, deploys them on Base, and registers ENS subdomains. Users get `name.base.eth` that resolves to their verified profile.
+Smart contracts are unforgiving. One bug costs millions. Most teams ship code at 4am with no spec.
 
-## Quick Start
+**dotname makes spec-first onchain identity trivial.** Write a .dog spec describing your identity protocol. Run `dotname demo`. Get deployable Solidity contracts targeting Base Sepolia with ENS subdomain resolution.
+
+```
+.dog spec  →  dotname demo  →  4 contracts generated  →  deploy to Base  →  alice.base.eth resolves to profile
+```
+
+## Sponsors
+
+- 🟦 **Base** — all contracts deploy on Base Sepolia
+- 🔷 **ENS** — subdomain registration + resolution
+
+## Demo
 
 ```bash
-npx dotname init my-identity
-npx dotname generate    # Solidity stubs from .dog spec
-npx dotname deploy      # Deploy to Base Sepolia
-npx dotname register    # Register .eth subdomain via ENS
+$ node bin/dotname demo
+
+  ╔══════════════════════════════════════╗
+  ║   dotname — onchain identity        ║
+  ║   Deploy on Base · Resolve via ENS  ║
+  ╚══════════════════════════════════════╝
+
+  [1/4] Spec
+  .dog spec defines protocol: 5 entities, 4 relationships
+  Profile, Registry, Resolver, Registrar, Registration
+
+  [2/4] Generate
+  .dag → Solidity contracts
+  4 contracts generated: Profile.sol, Registry.sol, Resolver.sol, Registrar.sol
+
+  [3/4] Deploy
+  Deploy to Base Sepolia
+  Low fees. Fast finality. Ethereum security.
+
+  [4/4] Register
+  Register name.base.eth via ENS
+  alice.base.eth → Profile contract → bio, avatar, links
+  Fully onchain. Fully yours.
 ```
+
+## Generated Contracts
+
+Each contract includes:
+- NatSpec documentation from .dog spec
+- State machine with lifecycle transitions
+- Access control (Ownable)
+- Relationship references to other protocol contracts
 
 ## Architecture
 
-### Entities
-- **Profile** — onchain identity with name, avatar, bio, links
-- **Registry** — maps .eth names to profile addresses
-- **Resolver** — ENS resolver contract for name → address lookups
-- **Registrar** — subdomain registrar for `*.base.eth`
-
-### Flow
 ```
-User writes .dog spec
-    ↓
-dotname generate → Profile.sol + Registry.sol + Resolver.sol
-    ↓
-dotname deploy → Base Sepolia
-    ↓
-dotname register → alice.base.eth → resolves to profile
+specs/yield-vault/           contracts/src/
+├── SPEC.dog      →         ├── Profile.sol
+├── data-model.dog →        ├── Registry.sol
+├── yield-vault.dag →       ├── Resolver.sol
+                             └── Registrar.sol
 ```
 
 ## Prize Targets
 
-| Sponsor | How we integrate |
-|---------|-----------------|
-| 🟦 **Base** | All contracts deploy on Base Sepolia |
-| 🔷 **ENS** | Register subdomains, resolve .eth names |
-| 🤖 **AI + Blockchain** | dotdog MCP server — agents query identity spec |
-| 🛠 **Best Dev Tool** | Spec-first Solidity with dotdog |
-
-## Templates
-
-| Template | What it builds |
-|----------|---------------|
-| `profile` | Basic onchain profile (name, avatar, bio) |
-| `registry` | ENS-compatible name registry |
-| `community` | DAO membership + roles + voting |
+| Sponsor | Integration |
+|---------|------------|
+| Base | All contracts deploy on Base Sepolia |
+| ENS | Subdomain registration + name → profile resolution |
 
 ## License
 
