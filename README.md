@@ -1,46 +1,57 @@
-# dotdefi
+# dotname
 
-> Spec-first DeFi development. Write .dog specs. Generate Solidity stubs. Deploy with confidence.
+> Spec-first onchain identity. Deploy on Base. Resolve via ENS.
 
-Built on [dotdog](https://github.com/specdog/dotdog). Built for [ETHGlobal](https://ethglobal.com).
+Built on [dotdog](https://github.com/specdog/dotdog). Built for [ETHGlobal New York 2026](https://ethglobal.com/events/newyork2026).
 
-## Why
+## What
 
-Smart contracts are unforgiving. One bug costs millions. Write your protocol spec first — entities, relationships, lifecycles — then generate the code. No more unaudited contracts shipped at 4am.
+Write a .dog spec for your onchain identity protocol. dotname generates Solidity contracts, deploys them on Base, and registers ENS subdomains. Users get `name.base.eth` that resolves to their verified profile.
 
 ## Quick Start
 
 ```bash
-npx dotdefi init my-defi
-npx dotdefi generate
-npx dotdefi deploy --network base-sepolia
+npx dotname init my-identity
+npx dotname generate    # Solidity stubs from .dog spec
+npx dotname deploy      # Deploy to Base Sepolia
+npx dotname register    # Register .eth subdomain via ENS
 ```
+
+## Architecture
+
+### Entities
+- **Profile** — onchain identity with name, avatar, bio, links
+- **Registry** — maps .eth names to profile addresses
+- **Resolver** — ENS resolver contract for name → address lookups
+- **Registrar** — subdomain registrar for `*.base.eth`
+
+### Flow
+```
+User writes .dog spec
+    ↓
+dotname generate → Profile.sol + Registry.sol + Resolver.sol
+    ↓
+dotname deploy → Base Sepolia
+    ↓
+dotname register → alice.base.eth → resolves to profile
+```
+
+## Prize Targets
+
+| Sponsor | How we integrate |
+|---------|-----------------|
+| 🟦 **Base** | All contracts deploy on Base Sepolia |
+| 🔷 **ENS** | Register subdomains, resolve .eth names |
+| 🤖 **AI + Blockchain** | dotdog MCP server — agents query identity spec |
+| 🛠 **Best Dev Tool** | Spec-first Solidity with dotdog |
 
 ## Templates
 
 | Template | What it builds |
 |----------|---------------|
-| `erc20` | Token contract with mint/burn/transfer |
-| `erc721` | NFT contract with metadata |
-| `vault` | Yield-bearing vault with deposit/withdraw |
-| `staking` | Staking pool with rewards |
-| `bridge` | Cross-chain token bridge |
-| `dao` | Governor + treasury |
-
-## Architecture
-
-```
-.spec (.dog)   →   dotdefi generate   →   Solidity stubs   →   deploy
-      ↑                                                         ↓
-      └────────── dotdefi validate ←────── testnet verification ←┘
-```
-
-## Prize Targets
-
-- 🟦 **Base** — deploy on Base Sepolia
-- 🔴 **Optimism** — deploy on OP Mainnet
-- 🤖 **AI + Blockchain** — MCP server for agent queries
-- 🛠 **Best Developer Tool** — spec-first Solidity
+| `profile` | Basic onchain profile (name, avatar, bio) |
+| `registry` | ENS-compatible name registry |
+| `community` | DAO membership + roles + voting |
 
 ## License
 

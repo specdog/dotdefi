@@ -1,82 +1,115 @@
-# Data Model — Yield Vault
+# Data Model — Onchain Identity
 
 ## Entities
 
-### Entity: Vault
+### Entity: Profile
 
-An ERC-4626 compliant vault that accepts deposits and manages yield strategies.
+A user's onchain identity. Stores name, avatar, bio, and verified links.
 
 ```yaml
-entity: Vault
+entity: Profile
 type: contract
 properties:
   address:
-    type: string
-    required: true
-  underlying:
-    type: string
-    required: true
-  name:
-    type: string
-    required: true
-  symbol:
-    type: string
-    required: true
-  totalAssets:
-    type: number
-    required: true
-  performanceFee:
-    type: number
-    required: true
-states: [initialized, active, paused, emergency]
-lifecycle: initialized → active → paused → emergency
-```
-
-### Entity: Strategy
-
-A yield-generating strategy that deploys vault capital.
-
-```yaml
-entity: Strategy
-type: contract
-properties:
-  address:
-    type: string
-    required: true
-  name:
-    type: string
-    required: true
-  apy:
-    type: number
-    required: true
-  tvl:
-    type: number
-    required: true
-  risk:
-    type: enum
-    values: [low, medium, high]
-    required: true
-states: [proposed, active, harvesting, closed]
-lifecycle: proposed → active → harvesting → closed
-```
-
-### Entity: Deposit
-
-A user deposit into the vault.
-
-```yaml
-entity: Deposit
-type: event
-properties:
-  user:
     type: string
     format: address
     required: true
-  amount:
+  name:
+    type: string
+    required: true
+  avatar:
+    type: string
+    required: false
+  bio:
+    type: string
+    required: false
+  links:
+    type: json
+    required: false
+  owner:
+    type: string
+    format: address
+    required: true
+states: [created, active, suspended]
+lifecycle: created → active → suspended
+```
+
+### Entity: Registry
+
+ENS-compatible registry mapping names to profile addresses.
+
+```yaml
+entity: Registry
+type: contract
+properties:
+  address:
+    type: string
+    format: address
+    required: true
+  owner:
+    type: string
+    format: address
+    required: true
+states: [deployed, active]
+lifecycle: deployed → active
+```
+
+### Entity: Resolver
+
+ENS resolver that returns profile metadata for a given name.
+
+```yaml
+entity: Resolver
+type: contract
+properties:
+  address:
+    type: string
+    format: address
+    required: true
+states: [deployed, active]
+lifecycle: deployed → active
+```
+
+### Entity: Registrar
+
+Subdomain registrar for base.eth. Users register `name.base.eth` subdomains.
+
+```yaml
+entity: Registrar
+type: contract
+properties:
+  address:
+    type: string
+    format: address
+    required: true
+  parentDomain:
+    type: string
+    required: true
+  registrationFee:
     type: number
     required: true
-  shares:
-    type: number
+states: [deployed, active]
+lifecycle: deployed → active
+```
+
+### Entity: Registration
+
+A name registration event on the Base blockchain.
+
+```yaml
+entity: Registration
+type: event
+properties:
+  name:
+    type: string
+    required: true
+  owner:
+    type: string
+    format: address
+    required: true
+  profile:
+    type: string
+    format: address
     required: true
   timestamp:
     type: number
@@ -85,90 +118,44 @@ states: [pending, confirmed]
 lifecycle: pending → confirmed
 ```
 
-### Entity: Withdrawal
-
-A user withdrawal from the vault.
-
-```yaml
-entity: Withdrawal
-type: event
-properties:
-  user:
-    type: string
-    format: address
-    required: true
-  shares:
-    type: number
-    required: true
-  amount:
-    type: number
-    required: true
-  timestamp:
-    type: number
-    required: true
-states: [pending, queued, completed]
-lifecycle: pending → queued → completed
-```
-
-### Entity: Share
-
-ERC-20 token representing proportional ownership of vault assets.
-
-```yaml
-entity: Share
-type: contract
-properties:
-  address:
-    type: string
-    required: true
-  totalSupply:
-    type: number
-    required: true
-  pricePerShare:
-    type: number
-    required: true
-states: [active]
-lifecycle: active → active
-```
-
 ## Relationships
 
-### Relationship: Vault → Strategy
+### Relationship: Registrar → Profile
 
 ```yaml
-relationship: Vault -> Strategy
-verb: deploys
-cardinality: 1:N
-required: true
-description: Vault deploys capital into one or more strategies
-```
-
-### Relationship: Vault → Share
-
-```yaml
-relationship: Vault -> Share
-verb: mints
+relationship: Registrar -> Profile
+verb: creates
 cardinality: 1:1
 required: true
-description: Vault mints shares on deposit
+description: Registering a name creates a profile
 ```
 
-### Relationship: Vault → Deposit
+### Relationship: Registry → Profile
 
 ```yaml
-relationship: Vault -> Deposit
-verb: receives
+relationship: Registry -> Profile
+verb: maps
 cardinality: 1:N
 required: true
-description: Vault receives user deposits
+description: Registry maps ENS names to profile addresses
 ```
 
-### Relationship: Strategy → Vault
+### Relationship: Resolver → Profile
 
 ```yaml
-relationship: Strategy -> Vault
-verb: returns
-cardinality: N:1
+relationship: Resolver -> Profile
+verb: resolves
+cardinality: 1:N
 required: true
-description: Strategy returns yield to vault
+description: Resolver returns profile metadata for ENS lookups
+```
+
+### Relationship: Profile → Base
+
+```yaml
+relationship: Profile -> Base
+verb: deployed_on
+cardinality: 1:1
+required: true
+description: All contracts deployed on Base Sepolia L2
 ```

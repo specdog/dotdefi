@@ -1,30 +1,30 @@
-# SPEC — Yield Vault
+# SPEC — Onchain Identity
 
-> A permissionless yield-bearing vault. Users deposit tokens, earn yield via automated strategies, withdraw with accrued rewards. ERC-4626 compatible.
+> Spec-first onchain identity protocol. Users register profiles on Base, resolve via ENS subdomains. Fully onchain, fully yours.
 
 ---
 
 ## Product
 
-A vault that accepts deposits of an underlying token (USDC), mints shares representing ownership, deploys capital into yield strategies, and allows withdrawals at any time with accrued yield.
+A permissionless identity protocol. Users create profiles with name, avatar, bio, and links. Profiles are registered as ENS subdomains under `base.eth`. Resolving `alice.base.eth` returns Alice's profile address.
 
-### Flow: User deposits
-
-```
-User approves Vault → deposit(amount) → Vault mints Shares → Strategy deploys capital → yield accrues
-```
-
-### Flow: User withdraws
+### Flow: User creates a profile
 
 ```
-User calls withdraw(shares) → Vault burns Shares → Strategy withdraws capital → User receives underlying + yield
+User calls register("alice") → Registrar mints alice.base.eth → Profile contract stores avatar/bio/links → ENS Resolver maps name → address
+```
+
+### Flow: Someone looks up a profile
+
+```
+ENS resolution: alice.base.eth → Resolver → Profile address → read bio, avatar, links
 ```
 
 ## Architecture
 
-| Contract | Role |
-|----------|------|
-| Vault | ERC-4626 compliant vault. Mints/burns shares. |
-| Strategy | Deploys capital into yield source (lending, LP). |
-| Share | ERC-20 token representing vault ownership. |
-| Registry | Tracks all vaults and strategies. |
+| Contract | Role | Deploys to |
+|----------|------|-----------|
+| Profile | Stores user identity data (name, avatar, bio, links) | Base Sepolia |
+| Registry | Maps ENS names to profile addresses | Base Sepolia |
+| Resolver | ENS-compatible resolver returning profile metadata | Base Sepolia |
+| Registrar | Registers subdomains under base.eth | Base Sepolia |

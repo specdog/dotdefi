@@ -4,63 +4,88 @@
   "c": "dotdog@0.3.5",
   "n": [
     {
-      "i": "Vault",
+      "i": "Profile",
       "t": "contract",
       "g": "entity",
-      "d": "An ERC-4626 compliant vault that accepts deposits and manages yield strategies.",
-      "p": {
-        "address": "s!",
-        "underlying": "s!",
-        "name": "s!",
-        "symbol": "s!",
-        "totalAssets": "n!",
-        "performanceFee": "n!"
-      },
-      "s": [
-        "initialized",
-        "active",
-        "paused",
-        "emergency"
-      ],
-      "l": [
-        "initialized → active",
-        "active → paused",
-        "paused → emergency"
-      ]
-    },
-    {
-      "i": "Strategy",
-      "t": "contract",
-      "g": "entity",
-      "d": "A yield-generating strategy that deploys vault capital.",
+      "d": "A user's onchain identity. Stores name, avatar, bio, and verified links.",
       "p": {
         "address": "s!",
         "name": "s!",
-        "apy": "n!",
-        "tvl": "n!",
-        "risk": "e!"
+        "avatar": "s!",
+        "bio": "s!",
+        "links": "j!",
+        "owner": "s!"
       },
       "s": [
-        "proposed",
+        "created",
         "active",
-        "harvesting",
-        "closed"
+        "suspended"
       ],
       "l": [
-        "proposed → active",
-        "active → harvesting",
-        "harvesting → closed"
+        "created → active",
+        "active → suspended"
       ]
     },
     {
-      "i": "Deposit",
+      "i": "Registry",
+      "t": "contract",
+      "g": "entity",
+      "d": "ENS-compatible registry mapping names to profile addresses.",
+      "p": {
+        "address": "s!",
+        "owner": "s!"
+      },
+      "s": [
+        "deployed",
+        "active"
+      ],
+      "l": [
+        "deployed → active"
+      ]
+    },
+    {
+      "i": "Resolver",
+      "t": "contract",
+      "g": "entity",
+      "d": "ENS resolver that returns profile metadata for a given name.",
+      "p": {
+        "address": "s!"
+      },
+      "s": [
+        "deployed",
+        "active"
+      ],
+      "l": [
+        "deployed → active"
+      ]
+    },
+    {
+      "i": "Registrar",
+      "t": "contract",
+      "g": "entity",
+      "d": "Subdomain registrar for base.eth. Users register `name.base.eth` subdomains.",
+      "p": {
+        "address": "s!",
+        "parentDomain": "s!",
+        "registrationFee": "n!"
+      },
+      "s": [
+        "deployed",
+        "active"
+      ],
+      "l": [
+        "deployed → active"
+      ]
+    },
+    {
+      "i": "Registration",
       "t": "event",
       "g": "entity",
-      "d": "A user deposit into the vault.",
+      "d": "A name registration event on the Base blockchain.",
       "p": {
-        "user": "s!",
-        "amount": "n!",
-        "shares": "n!",
+        "name": "s!",
+        "owner": "s!",
+        "profile": "s!",
         "timestamp": "n!"
       },
       "s": [
@@ -70,87 +95,49 @@
       "l": [
         "pending → confirmed"
       ]
-    },
-    {
-      "i": "Withdrawal",
-      "t": "event",
-      "g": "entity",
-      "d": "A user withdrawal from the vault.",
-      "p": {
-        "user": "s!",
-        "shares": "n!",
-        "amount": "n!",
-        "timestamp": "n!"
-      },
-      "s": [
-        "pending",
-        "queued",
-        "completed"
-      ],
-      "l": [
-        "pending → queued",
-        "queued → completed"
-      ]
-    },
-    {
-      "i": "Share",
-      "t": "contract",
-      "g": "entity",
-      "d": "ERC-20 token representing proportional ownership of vault assets.",
-      "p": {
-        "address": "s!",
-        "totalSupply": "n!",
-        "pricePerShare": "n!"
-      },
-      "s": [
-        "active"
-      ],
-      "l": [
-        "active → active"
-      ]
     }
   ],
   "e": [
     {
-      "s": "Vault",
-      "t": "Strategy",
-      "v": "deploys",
-      "d": "Vault deploys capital into one or more strategies",
-      "c": "1:N",
-      "r": true
-    },
-    {
-      "s": "Vault",
-      "t": "Share",
-      "v": "mints",
-      "d": "Vault mints shares on deposit",
+      "s": "Registrar",
+      "t": "Profile",
+      "v": "creates",
+      "d": "Registering a name creates a profile",
       "c": "1:1",
       "r": true
     },
     {
-      "s": "Vault",
-      "t": "Deposit",
-      "v": "receives",
-      "d": "Vault receives user deposits",
+      "s": "Registry",
+      "t": "Profile",
+      "v": "maps",
+      "d": "Registry maps ENS names to profile addresses",
       "c": "1:N",
       "r": true
     },
     {
-      "s": "Strategy",
-      "t": "Vault",
-      "v": "returns",
-      "d": "Strategy returns yield to vault",
-      "c": "N:1",
+      "s": "Resolver",
+      "t": "Profile",
+      "v": "resolves",
+      "d": "Resolver returns profile metadata for ENS lookups",
+      "c": "1:N",
+      "r": true
+    },
+    {
+      "s": "Profile",
+      "t": "Base",
+      "v": "deployed_on",
+      "d": "All contracts deployed on Base Sepolia L2",
+      "c": "1:1",
       "r": true
     }
   ],
   "tk": {
     "m": "chars/4",
-    "st": 971,
-    "ct": 971,
-    "dt": 443,
-    "sv": 54.4,
-    "cs": 54.4,
-    "saved": 528
+    "st": 967,
+    "ct": 967,
+    "dt": 416,
+    "sv": 57,
+    "cs": 57,
+    "saved": 551
   }
 }
