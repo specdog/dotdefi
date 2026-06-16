@@ -1,5 +1,8 @@
 # dotname
 
+[![Built with dotdog](https://img.shields.io/badge/built%20with-dotdog-orange)](https://github.com/specdog/dotdog)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/specdog/dotdefi/blob/main/LICENSE)
+
 > Write a spec. Generate contracts. Deploy on Base. Register via ENS.
 
 Built on [dotdog](https://github.com/specdog/dotdog). Built for [ETHGlobal New York 2026](https://ethglobal.com/events/newyork2026).
